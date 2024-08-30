@@ -9,7 +9,3 @@ export const proxyTerm = proxy({
 export const setTermValue = (newTerm) => {
   proxyTerm.term.value = newTerm;
 };
-
-export const setTermSubmit = () => {
-  console.log("submitted");
-};

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components/native";
 import { Feather } from "@expo/vector-icons";
 import { useSnapshot } from "valtio";
@@ -10,7 +10,7 @@ const StyledView = styled.View`
   background-color: #f0eeee;
   height: 50px;
   border-radius: 5px;
-  margin: 15px 15px 0;
+  margin: 15px 15px 10px;
   flex-direction: row;
   gap: 10px;
   padding: 0 10px;
@@ -26,23 +26,35 @@ const StyledIcon = styled(Feather)`
   align-self: center;
 `;
 
-const SearchBar = () => {
+const SearchBar = ({ setErrorMsg, errorMsg }) => {
   const { value } = useSnapshot(proxyTerm.term);
 
-  const searchApi = async () => {
+  useEffect(() => {
+    searchApi("pasta");
+  }, []);
+
+  const searchApi = async (term) => {
     try {
       const response = await yelp.get("/search", {
         params: {
           limit: 50,
-          term: value,
-          location: "san jose",
+          term,
+          location: "oakland",
         },
       });
 
       setProxyBusinesses(response.data.businesses);
     } catch (error) {
-      console.error(error);
+      setErrorMsg("Something went wrong");
     }
+  };
+
+  const onChangeText = (text) => {
+    if (errorMsg.trim() !== "") {
+      setErrorMsg("");
+    }
+
+    setTermValue(text);
   };
 
   return (
@@ -52,8 +64,8 @@ const SearchBar = () => {
       <StyledTextInput
         placeholder="search"
         value={value}
-        onChangeText={setTermValue}
-        onEndEditing={searchApi}
+        onChangeText={onChangeText}
+        onEndEditing={() => searchApi(value)}
       />
     </StyledView>
   );
