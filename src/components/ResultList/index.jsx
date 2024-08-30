@@ -16,7 +16,7 @@ const Title = styled.Text`
 `;
 
 const ResultList = ({ businesses, title, navigation }) => {
-  console.log(navigation.navigate);
+  if (!businesses.length) return null;
 
   return (
     <View>
@@ -28,7 +28,9 @@ const ResultList = ({ businesses, title, navigation }) => {
         data={businesses}
         keyExtractor={(business) => business.id}
         renderItem={({ item }) => (
-          <TouchableOpacity onPress={() => navigation.navigate("ResultsShow")}>
+          <TouchableOpacity
+            onPress={() => navigation.navigate("ResultsShow", { id: item.id })}
+          >
             <ResultDetails result={item} />
           </TouchableOpacity>
         )}
